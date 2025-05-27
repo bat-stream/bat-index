@@ -136,59 +136,44 @@
       copyTextToClipboard(downloadUrl);
     }
 
-    // Gyro support only in fullscreen
-    let gyroHandler = null;
+    // Hold to play at 2x speed
+    const videoElement = document.querySelector('#player');
+    let holdTimer;
 
-    function handleGyro(event) {
-      const gamma = event.gamma; // left/right
-      const beta = event.beta;   // forward/back
-
-      if (Math.abs(gamma) > 20) {
-        if (gamma > 20) {
-          player.forward(10);
-        } else {
-          player.rewind(10);
-        }
-      }
-
-      if (Math.abs(beta) > 30) {
-        if (beta > 30) {
-          player.volume = Math.max(0, player.volume - 0.05);
-        } else if (beta < -30) {
-          player.volume = Math.min(1, player.volume + 0.05);
-        }
-      }
+    function enableFastSpeed() {
+      player.speed = 2;
     }
 
-    function enableGyro() {
-      if (gyroHandler === null && window.DeviceOrientationEvent) {
-        gyroHandler = handleGyro;
-        window.addEventListener('deviceorientation', gyroHandler);
-      }
+    function disableFastSpeed() {
+      player.speed = 1;
     }
 
-    function disableGyro() {
-      if (gyroHandler !== null) {
-        window.removeEventListener('deviceorientation', gyroHandler);
-        gyroHandler = null;
-      }
-    }
+    videoElement.addEventListener('pointerdown', () => {
+      holdTimer = setTimeout(enableFastSpeed, 200);
+    });
 
-    // Listen for fullscreen changes
-    document.addEventListener('fullscreenchange', () => {
-      if (document.fullscreenElement) {
-        enableGyro();
-      } else {
-        disableGyro();
+    videoElement.addEventListener('pointerup', () => {
+      clearTimeout(holdTimer);
+      disableFastSpeed();
+    });
+
+    videoElement.addEventListener('pointerleave', () => {
+      clearTimeout(holdTimer);
+      disableFastSpeed();
+    });
+
+    // Lock orientation to landscape in fullscreen
+    player.on('enterfullscreen', () => {
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(err => {
+          console.warn('Orientation lock failed:', err.message);
+        });
       }
     });
 
-    // Safari/iOS fullscreen support
-    document.addEventListener('webkitfullscreenchange', () => {
-      if (document.webkitFullscreenElement) {
-        enableGyro();
-      } else {
-        disableGyro();
+    player.on('exitfullscreen', () => {
+      if (screen.orientation && screen.orientation.unlock) {
+        screen.orientation.unlock();
       }
     });
   </script>
