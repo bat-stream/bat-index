@@ -2,129 +2,196 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TG Drive - Video Player</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TG Drive - Video Player</title>
 
-    <!-- Plyr CSS -->
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+  <!-- Plyr CSS -->
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
-    <style>
-        :root {
-            --plyr-color-main: #e50914; /* Red theme */
-        }
+  <style>
+    :root {
+      --plyr-color-main: #e50914; /* Red theme */
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background-color: #f5f5f5;
-        }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        .video-container {
-            width: 90%;
-            max-width: 800px;
-        }
+    .video-container {
+      width: 100%;
+      max-width: 800px;
+      padding: 10px;
+    }
 
-        .buttons-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-evenly;
-            width: 90%;
-            max-width: 800px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+    .buttons-container {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      width: 90%;
+      max-width: 800px;
+    }
 
-        .copy-button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #e50914;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
+    .copy-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #e50914;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
 
-        .copy-button:hover {
-            background-color: #b20710;
-        }
-    </style>
+    .copy-button:hover {
+      background-color: #b00610;
+    }
+
+    @media (max-width: 600px) {
+      .copy-button {
+        flex: 1 1 100%;
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      .buttons-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-    <div class="video-container">
-        <video id="player" playsinline controls>
-            <source id="video-src" src="" type="video/mp4" />
-        </video>
-    </div>
+  <div class="video-container">
+    <video id="player" class="js-player" playsinline controls>
+      <source id="video-src" src="" type="video/mp4" />
+      Your browser does not support HTML5 video.
+    </video>
+  </div>
 
-    <div class="buttons-container">
-        <button class="copy-button" onclick="copyStreamUrl()">Copy Stream URL</button>
-        <button class="copy-button" onclick="copyDownloadUrl()">Copy Download URL</button>
-    </div>
+  <div class="buttons-container">
+    <button class="copy-button" onclick="copyStreamUrl()">Copy Stream URL</button>
+    <button class="copy-button" onclick="copyDownloadUrl()">Copy Download URL</button>
+  </div>
 
-    <!-- Plyr JS -->
-    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+  <!-- Plyr JS -->
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
 
-    <script>
-        const downloadUrl = new URL(window.location.href).searchParams.get("url");
-        document.getElementById("video-src").src = downloadUrl;
+  <script>
+    const downloadUrl = new URL(window.location.href).searchParams.get("url");
+    document.getElementById("video-src").src = downloadUrl;
 
-        const player = new Plyr('#player', {
-            controls: [
-                'play-large', 'rewind', 'play', 'fast-forward',
-                'progress', 'current-time', 'duration',
-                'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'download', 'fullscreen'
-            ],
-            keyboard: { focused: true, global: true },
-            tooltips: { controls: true, seek: true },
-            seekTime: 30
-        });
+    const player = new Plyr('#player', {
+      controls: [
+        'play-large', 'rewind', 'play', 'fast-forward',
+        'progress', 'current-time', 'duration',
+        'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'download', 'fullscreen'
+      ],
+      seekTime: 30,
+      keyboard: { focused: true, global: true },
+      tooltips: { controls: true, seek: true }
+    });
 
-        function copyTextToClipboard(text) {
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text)
-                    .then(() => alert("Link copied to clipboard!"))
-                    .catch(err => {
-                        console.error("Clipboard error:", err);
-                        fallbackCopyTextToClipboard(text);
-                    });
-            } else {
-                fallbackCopyTextToClipboard(text);
-            }
+    function copyTextToClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+          .then(() => alert("Link copied to clipboard!"))
+          .catch(err => fallbackCopyTextToClipboard(text));
+      } else {
+        fallbackCopyTextToClipboard(text);
+      }
+    }
+
+    function fallbackCopyTextToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        const successful = document.execCommand("copy");
+        alert(successful ? "Link copied to clipboard!" : "Failed to copy the link.");
+      } catch (err) {
+        console.error("Fallback error:", err);
+      }
+      document.body.removeChild(textArea);
+    }
+
+    function copyStreamUrl() {
+      copyTextToClipboard(window.location.href);
+    }
+
+    function copyDownloadUrl() {
+      copyTextToClipboard(downloadUrl);
+    }
+
+    // Gyro support only in fullscreen
+    let gyroHandler = null;
+
+    function handleGyro(event) {
+      const gamma = event.gamma; // left/right
+      const beta = event.beta;   // forward/back
+
+      if (Math.abs(gamma) > 20) {
+        if (gamma > 20) {
+          player.forward(10);
+        } else {
+          player.rewind(10);
         }
+      }
 
-        function fallbackCopyTextToClipboard(text) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                const successful = document.execCommand("copy");
-                alert(successful ? "Link copied to clipboard!" : "Failed to copy the link.");
-            } catch (err) {
-                console.error("Fallback error:", err);
-            }
-            document.body.removeChild(textArea);
+      if (Math.abs(beta) > 30) {
+        if (beta > 30) {
+          player.volume = Math.max(0, player.volume - 0.05);
+        } else if (beta < -30) {
+          player.volume = Math.min(1, player.volume + 0.05);
         }
+      }
+    }
 
-        function copyStreamUrl() {
-            copyTextToClipboard(window.location.href);
-        }
+    function enableGyro() {
+      if (gyroHandler === null && window.DeviceOrientationEvent) {
+        gyroHandler = handleGyro;
+        window.addEventListener('deviceorientation', gyroHandler);
+      }
+    }
 
-        function copyDownloadUrl() {
-            copyTextToClipboard(downloadUrl);
-        }
-    </script>
+    function disableGyro() {
+      if (gyroHandler !== null) {
+        window.removeEventListener('deviceorientation', gyroHandler);
+        gyroHandler = null;
+      }
+    }
+
+    // Listen for fullscreen changes
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) {
+        enableGyro();
+      } else {
+        disableGyro();
+      }
+    });
+
+    // Safari/iOS fullscreen support
+    document.addEventListener('webkitfullscreenchange', () => {
+      if (document.webkitFullscreenElement) {
+        enableGyro();
+      } else {
+        disableGyro();
+      }
+    });
+  </script>
 
 </body>
 
