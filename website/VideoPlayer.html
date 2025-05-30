@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Bat Stream</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="https://i.ibb.co/zk9hYZX/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="https://i.ibb.co/8gtR2gPR/favicon-16x16.png">
+  <title>Video Player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
   <style>
     html, body {
@@ -12,405 +11,49 @@
       padding: 0;
       height: 100%;
       background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
     }
 
-    .plyr__control--overlaid {
-      background: transparent !important;
-      border: none;
-      justify-content: center;
-      display: flex;
+    .video-wrapper {
+      width: 100vw;
+      height: 100vh;
     }
 
-    .plyr__control--overlaid svg {
-    fill: #e50914 !important;
-    width: 74px !important;
-    height: 74px !important;
-    }
-
-      :root {
-      --plyr-color-main: #e50914; /* Red theme */
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background-color: #000;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .video-container {
-      width: 950px;
-      max-width: 1800px;
-      padding: 10px;
-    }
-
-    .buttons-container {
-      margin-top: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      width: 90%;
-      max-width: 800px;
-    }
-
-    .copy-button {
-      padding: 10px 20px;
-      font-size: 36px;
-      cursor: pointer;
-      background-color: #e50914;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-
-    .copy-button:hover {
-      background-color: #b00610;
-    }
-
-    .ads {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-      gap: 20px;
-    
-  
-    }
-
-    .top-bar {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .logo img {
-      width: 422px;
-      max-width: 100%;
-    }
-
-    .search-bar {
+    video {
       width: 100%;
-      display: flex;
-      justify-content: center;
-      padding: 10px;
+      height: 100%;
+      object-fit: contain;
     }
 
-    .search-bar input[type="text"] {
-      padding: 12px 16px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      width: 100%;
-      max-width: 700px;
-      font-size: 32px;
-    }
-
-    h2 {
-      font-size: 40px;
-      text-align: center;
-      margin: 20px 0 10px;
-    }
-
-    #movie-embed iframe {
-      width: 100%;
-      max-width: 1200px;
-      aspect-ratio: 16 / 9;
-      border: none;
-      border-radius: 8px;
-    }
-
-    #movie-embed {
-      display: flex;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    #movie-download { display: none; justify-content: center; align-items: center; margin: 20px auto; font-size: 53px; padding: 10px 20px; text-decoration: none; background: #007bff; color: #fff; border-radius: 16px; margin-bottom: 22px; height: 53px; max-width: 300px; }
-    #movie-download:hover { background-color: #0056b3; }
-
-    .episode-button {
-      padding: 12px 20px;
-      margin: 8px;
-      font-size: 18px;
-      border: none;
-      border-radius: 8px;
-      background-color: #1e1e1e;
-      color: white;
-      cursor: pointer;
-    }
-
-    .episode-button:hover {
-      background-color: #333;
-    }
-
-    .spinner-container {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px 0;
-    }
-
-    .spinner {
-      width: 70px;
-      height: 70px;
-      border: 8px solid #444;
-      border-top: 8px solid #3389eb;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 15px;
-    }
-
-    .loading-text {
-      font-size: 20px;
-      color: #3389eb;
-      font-weight: bold;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    footer {
-      background: black;
-      color: #ccc;
-      text-align: center;
-      padding: 20px;
-      font-size: 20px;
-    }
-
-    @media (max-width: 768px) {
-      .search-bar input[type="text"] {
-        font-size: 20px;
-      }
-      h2 {
-        font-size: 24px;
-      }
-      .episode-button {
-        font-size: 14px;
-      }
-
-       .copy-button {
-        flex: 1 1 100%;
-        font-size: 34px;
-        padding: 10px;
-      }
-
-      .buttons-container {
-        flex-direction: column;
-        align-items: stretch;
-      }
-    }
-
-     @media (max-width: 600px) {
-      .copy-button {
-        flex: 1 1 100%;
-        font-size: 34px;
-        padding: 10px;
-      }
-
-      .buttons-container {
-        flex-direction: column;
-        align-items: stretch;
-      }
+    :root {
+      --plyr-color-main: #e50914;
     }
   </style>
 </head>
 <body>
-  <div class="top-bar">
-    <div class="logo">
-      <a href="https://t.me/batmanlinkz"><img src="https://i.ibb.co/qLFwZbNN/logo.png" alt="logo"></a>
-    </div>
-  
-  </div>
- 
-
-  <div class="video-container">
+  <div class="video-wrapper">
     <video id="player" class="js-player" playsinline controls>
-      <source id="video-src" src="" type="video/mp4" />
+      <source id="video-src" src="" type="video/mp4">
       Your browser does not support HTML5 video.
     </video>
   </div>
-  <div class="buttons-container">
-    <button class="copy-button" onclick="copyStreamUrl()">Copy Stream URL</button>
-    <button class="copy-button" onclick="copyDownloadUrl()">Copy Download URL</button>
-  </div>
-
-
-  
-
-
-
-  <footer>
-    <p>&copy; 2025 <strong>IAmBatman</strong>. All Rights Reserved.</p>
-  </footer>
-
-
-
 
   <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-
   <script>
-    const downloadUrl = new URL(window.location.href).searchParams.get("url");
-    document.getElementById("video-src").src = downloadUrl;
+    const videoUrl = new URL(window.location.href).searchParams.get("url");
+    if (videoUrl) {
+      document.getElementById("video-src").src = videoUrl;
+    }
 
     const player = new Plyr('#player', {
       controls: [
         'play-large', 'rewind', 'play', 'fast-forward',
         'progress', 'current-time', 'duration',
-        'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'
+        'mute', 'volume', 'fullscreen'
       ],
       seekTime: 30,
       keyboard: { focused: true, global: true },
       tooltips: { controls: true, seek: true }
     });
-
-    function copyTextToClipboard(text) {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text)
-          .then(() => alert("Link copied to clipboard!"))
-          .catch(err => fallbackCopyTextToClipboard(text));
-      } else {
-        fallbackCopyTextToClipboard(text);
-      }
-    }
-
-    function fallbackCopyTextToClipboard(text) {
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-      try {
-        const successful = document.execCommand("copy");
-        alert(successful ? "Link copied to clipboard!" : "Failed to copy the link.");
-      } catch (err) {
-        console.error("Fallback error:", err);
-      }
-      document.body.removeChild(textArea);
-    }
-
-    function copyStreamUrl() {
-      copyTextToClipboard(window.location.href);
-    }
-
-    function copyDownloadUrl() {
-      copyTextToClipboard(downloadUrl);
-    }
-
-    // Hold to play at 2x speed
-    const videoElement = document.querySelector('#player');
-    let holdTimer;
-
-    function enableFastSpeed() {
-      player.speed = 2;
-    }
-
-    function disableFastSpeed() {
-      player.speed = 1;
-    }
-
-    videoElement.addEventListener('pointerdown', () => {
-      holdTimer = setTimeout(enableFastSpeed, 200);
-    });
-
-    videoElement.addEventListener('pointerup', () => {
-      clearTimeout(holdTimer);
-      disableFastSpeed();
-    });
-
-    videoElement.addEventListener('pointerleave', () => {
-      clearTimeout(holdTimer);
-      disableFastSpeed();
-    });
-
-    // Lock orientation to landscape in fullscreen
-    player.on('enterfullscreen', () => {
-      if (screen.orientation && screen.orientation.lock) {
-        screen.orientation.lock('landscape').catch(err => {
-          console.warn('Orientation lock failed:', err.message);
-        });
-      }
-    });
-
-    player.on('exitfullscreen', () => {
-      if (screen.orientation && screen.orientation.unlock) {
-        screen.orientation.unlock();
-      }
-    });
   </script>
-
- 
-<script>
-  let redirected = false;
-
-  function isDevToolsOpen() {
-    const threshold = 160;
-    return (
-      window.outerWidth - window.innerWidth > threshold ||
-      window.outerHeight - window.innerHeight > threshold
-    );
-  }
-
-  setInterval(() => {
-    if (isDevToolsOpen() && !redirected) {
-      redirected = true;
-      window.location.href = '/'; // redirect to homepage
-    }
-  }, 1000);
-
-  document.addEventListener('contextmenu', e => {
-    e.preventDefault();
-  });
-
-  document.addEventListener('keydown', function (e) {
-    const blockedCombos = [
-      (e.key === 'F12'),
-      (e.ctrlKey && e.shiftKey && ['I', 'J', 'C', 'K'].includes(e.key.toUpperCase())),
-      (e.metaKey && ['U'].includes(e.key.toUpperCase())) // Mac
-    ];
-    if (blockedCombos.some(Boolean) && !redirected) {
-      e.preventDefault();
-      redirected = true;
-      window.location.href = '/';
-    }
-  });
-</script>
-
- <script>
-  // Disable right-click
-  document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-  });
-
-  // Disable developer tools shortcuts
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'F12' || 
-        (e.ctrlKey || e.metaKey) && e.shiftKey && ['I', 'J', 'C', 'K'].includes(e.key.toUpperCase()) || 
-        (e.ctrlKey || e.metaKey) && ['U', 'S', 'P'].includes(e.key.toUpperCase())) {
-      e.preventDefault();
-    }
-  });
-</script>
-
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const title = urlParams.get("title");
-
-  if (title) {
-    document.getElementById("video-title").textContent = decodeURIComponent(title);
-    document.title = decodeURIComponent(title); // Sets browser tab title too
-  }
-</script>
-
-
-
 </body>
 </html>
