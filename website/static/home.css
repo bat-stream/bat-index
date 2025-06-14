@@ -629,4 +629,25 @@
     .upload-info {
         font-size: 14px;
     }
+
+.logout-button {
+    margin-left: auto;
+    padding-right: 20px;
+}
+
+.logout-button button {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.logout-button button:hover {
+    background-color: #c9302c;
+}
+
 }
