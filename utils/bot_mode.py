@@ -7,9 +7,9 @@ from utils.logger import Logger
 
 logger = Logger(__name__)
 
-START_CMD = """🚀 **Welcome To Bat Drive's Bot Mode**
+START_CMD = """🚀 **Welcome To TG Drive's Bot Mode**
 
-You can use this bot to upload files to your Bat Drive website directly instead of doing it from website.
+You can use this bot to upload files to your TG Drive website directly instead of doing it from website.
 
 🗄 **Commands:**
 /set_folder - Set folder for file uploads
@@ -17,7 +17,7 @@ You can use this bot to upload files to your Bat Drive website directly instead 
 
 📤 **How To Upload Files:** Send a file to this bot and it will be uploaded to your TG Drive website. You can also set a folder for file uploads using /set_folder command.
 
-Read more about [Bat Drive's Bot Mode](https://github.com/TechShreyash/TGDrive#tg-drives-bot-mode)
+Read more about [TG Drive's Bot Mode](https://github.com/TechShreyash/TGDrive#tg-drives-bot-mode)
 """
 
 SET_FOLDER_PATH_CACHE = {}
@@ -25,7 +25,7 @@ DRIVE_DATA = None
 BOT_MODE = None
 
 session_cache_path = Path("./cache")
-session_cache_path.parent.mkdir(parents=True, exist_ok=True)
+session_cache_path.mkdir(parents=True, exist_ok=True)
 
 main_bot = Client(
     name="main_bot",
@@ -36,20 +36,27 @@ main_bot = Client(
     workdir=session_cache_path,
 )
 
-# Custom ask function to mimic ask behavior
-async def ask_user(client: Client, message: Message, prompt: str, timeout: int = 60) -> Message:
-    await message.reply_text(prompt)
-    try:
-        response = await client.listen(message.chat.id, timeout=timeout)
-        return response
-    except asyncio.TimeoutError:
-        raise
+user_response_futures = {}
 
+@main_bot.on_message(filters.private & filters.text)
+async def collect_user_response(client: Client, message: Message):
+    future = user_response_futures.pop(message.from_user.id, None)
+    if future and not future.done():
+        future.set_result(message)
+
+async def ask_user(client: Client, message: Message, prompt: str, timeout: int = 60) -> Message:
+    user_id = message.from_user.id
+    await message.reply_text(prompt)
+    user_response_futures[user_id] = asyncio.get_event_loop().create_future()
+    try:
+        return await asyncio.wait_for(user_response_futures[user_id], timeout=timeout)
+    except asyncio.TimeoutError:
+        user_response_futures.pop(user_id, None)
+        raise
 
 @main_bot.on_message(filters.command(["start", "help"]) & filters.private & filters.user(config.TELEGRAM_ADMIN_IDS))
 async def start_handler(client: Client, message: Message):
     await message.reply_text(START_CMD, disable_web_page_preview=True)
-
 
 @main_bot.on_message(filters.command("set_folder") & filters.private & filters.user(config.TELEGRAM_ADMIN_IDS))
 async def set_folder_handler(client: Client, message: Message):
@@ -94,7 +101,6 @@ async def set_folder_handler(client: Client, message: Message):
         reply_markup=InlineKeyboardMarkup(buttons)
     )
 
-
 @main_bot.on_callback_query(filters.user(config.TELEGRAM_ADMIN_IDS) & filters.regex(r"set_folder_"))
 async def set_folder_callback(client: Client, callback_query: CallbackQuery):
     global SET_FOLDER_PATH_CACHE, BOT_MODE
@@ -117,12 +123,10 @@ async def set_folder_callback(client: Client, callback_query: CallbackQuery):
         f"✅ Folder set to: **{name}**\n\nNow you can send or forward files and they will be uploaded to this folder."
     )
 
-
 @main_bot.on_message(filters.command("current_folder") & filters.private & filters.user(config.TELEGRAM_ADMIN_IDS))
 async def current_folder_handler(client: Client, message: Message):
     global BOT_MODE
     await message.reply_text(f"📂 Current Folder: `{BOT_MODE.current_folder_name}`")
-
 
 @main_bot.on_message(
     filters.private & filters.user(config.TELEGRAM_ADMIN_IDS) &
@@ -154,7 +158,6 @@ async def file_handler(client: Client, message: Message):
 """,
         quote=True
     )
-
 
 async def start_bot_mode(d, b):
     global DRIVE_DATA, BOT_MODE
