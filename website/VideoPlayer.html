@@ -37,50 +37,24 @@
     </video>
   </div>
 
-<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-<script>
-  const videoUrl = new URL(window.location.href).searchParams.get("url");
-  const video = document.getElementById("player");
-  const source = document.getElementById("video-src");
-
-  if (videoUrl) {
-    source.src = videoUrl;
-    video.load();
-  }
-
-  const player = new Plyr('#player', {
-    controls: [
-      'play-large', 'rewind', 'play', 'fast-forward',
-      'progress', 'current-time', 'duration',
-      'mute', 'volume', 'fullscreen'
-    ],
-    seekTime: 30,
-    keyboard: { focused: true, global: true },
-    tooltips: { controls: true, seek: true }
-  });
-
-  const STORAGE_KEY = "resume_time_" + encodeURIComponent(videoUrl);
-
-  // Resume video from last position
-  video.addEventListener("loadedmetadata", () => {
-    const savedTime = parseFloat(localStorage.getItem(STORAGE_KEY));
-    if (!isNaN(savedTime) && savedTime > 0 && savedTime < video.duration) {
-      video.currentTime = savedTime;
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+  <script>
+    const videoUrl = new URL(window.location.href).searchParams.get("url");
+    if (videoUrl) {
+      document.getElementById("video-src").src = videoUrl;
     }
-  });
 
-  // Save current playback time every 2 seconds
-  video.addEventListener("timeupdate", () => {
-    if (!video.seeking && !video.paused) {
-      localStorage.setItem(STORAGE_KEY, video.currentTime.toFixed(1));
-    }
-  });
-
-  // Clear resume point when video ends
-  video.addEventListener("ended", () => {
-    localStorage.removeItem(STORAGE_KEY);
-  });
-</script>
+    const player = new Plyr('#player', {
+      controls: [
+        'play-large', 'rewind', 'play', 'fast-forward',
+        'progress', 'current-time', 'duration',
+        'mute', 'volume', 'fullscreen'
+      ],
+      seekTime: 30,
+      keyboard: { focused: true, global: true },
+      tooltips: { controls: true, seek: true }
+    });
+  </script>
 
 </body>
 </html>
