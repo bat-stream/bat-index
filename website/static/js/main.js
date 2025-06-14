@@ -41,14 +41,14 @@ function showDirectory(data) {
     }
     document.getElementById('directory-data').innerHTML = html
 
-    if (!isTrash) {
-        document.querySelectorAll('.folder-tr').forEach(div => {
-            div.ondblclick = openFolder;
-        });
-        document.querySelectorAll('.file-tr').forEach(div => {
-            div.ondblclick = openFile;
-        });
-    }
+   // if (!isTrash) {
+     //   document.querySelectorAll('.folder-tr').forEach(div => {
+     //       div.ondblclick = openFolder;
+     //   });
+     //   document.querySelectorAll('.file-tr').forEach(div => {
+     //       div.ondblclick = openFile;
+    //    });
+  //  }
 
     document.querySelectorAll('.more-btn').forEach(div => {
         div.addEventListener('click', function (event) {
