@@ -93,3 +93,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
+
+function logout() {
+    fetch('/logout', { method: 'POST' }) // Change to your logout endpoint
+        .then(res => {
+            if (res.ok) {
+                window.location.href = '/login'; // Redirect after logout
+            }
+        });
+}
+
