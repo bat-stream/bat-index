@@ -246,7 +246,7 @@
 
 /* Remote URL Upload Start */
 
-#single-threaded-div{
+#single-threaded-div {
     display: flex;
     flex-direction: row;
     justify-content: start;
@@ -255,22 +255,15 @@
     margin: 10px 0px;
 }
 
-#single-threaded-div input{
+#single-threaded-div input {
     width: auto;
-    margin: 0px;
     margin-left: 10px;
 }
 
-#single-threaded-div img{
+#single-threaded-div img, #single-threaded-div a {
     height: 16px;
     width: 16px;
 }
-#single-threaded-div a{
-    height: 16px;
-    width: 16px;
-}
-
-/* Remote URL Upload End */
 
 /* File Uploader Start */
 
@@ -317,10 +310,11 @@
     border-radius: 5px;
     overflow: hidden;
     margin-top: 20px;
+    height: 20px;
 }
 
 .progress-bar {
-    height: 20px;
+    height: 100%;
     background-color: #007bff;
     width: 0;
     transition: width 0.3s;
@@ -354,8 +348,7 @@
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* File Uploader End */
-
+/* Sidebar Menu */
 .sidebar-menu {
     margin-top: 20px;
     width: 100%;
@@ -393,10 +386,7 @@
     margin-right: 10px;
 }
 
-/* Sidebar Style End */
-
-/* Main Content Style Start */
-
+/* Main Content Style */
 .main-content {
     width: 100%;
     height: 100%;
@@ -465,15 +455,7 @@
     border-collapse: collapse;
 }
 
-.directory table tr th {
-    text-align: start;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #444746;
-    padding: 10px 0px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
+.directory table tr th,
 .directory table tr td {
     text-align: start;
     font-size: 0.9rem;
@@ -526,110 +508,7 @@
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        position: static;
-        box-shadow: none;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .sidebar-header {
-        flex-direction: row;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .sidebar-header img {
-        width: 32px;
-        height: 32px;
-    }
-
-    .new-button {
-        width: auto;
-        padding: 8px 12px;
-        font-size: 14px;
-    }
-
-    .new-upload {
-        position: static;
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        background: none;
-        box-shadow: none;
-        padding: 0;
-    }
-
-    .sidebar-menu {
-        display: flex;
-        width: 100%;
-        justify-content: space-around;
-        margin-top: 10px;
-    }
-
-    .sidebar-menu a {
-        flex: 1;
-        text-align: center;
-        padding: 8px 0;
-        font-size: 14px;
-    }
-
-    .main-content {
-        width: 100%;
-        padding: 10px;
-    }
-
-    .header {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .search-bar {
-        width: 100%;
-        display: flex;
-        gap: 8px;
-        align-items: center;
-    }
-
-    .search-bar input {
-        flex: 1;
-        padding: 6px;
-    }
-
-    .directory table {
-        font-size: 14px;
-    }
-
-    .create-new-folder,
-    .file-uploader {
-        width: 90%;
-        left: 5%;
-        top: 10%;
-    }
-
-    .btn-div button {
-        width: 100%;
-        margin-top: 10px;
-    }
-
-    .progress {
-        height: 8px;
-    }
-
-    .upload-info {
-        font-size: 14px;
-    }
-
+/* Logout Button */
 .logout-button {
     margin-left: auto;
     padding-right: 20px;
@@ -650,4 +529,94 @@
     background-color: #c9302c;
 }
 
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .sidebar-header {
+        gap: 10px;
+    }
+
+    .new-button {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .sidebar-menu {
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .sidebar-menu a {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    .main-content {
+        padding: 10px;
+    }
+
+    .main-content .header {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .search-bar input {
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    .directory table th,
+    .directory table td {
+        font-size: 13px;
+        padding: 8px 4px;
+    }
+
+    .directory .td-align img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .create-new-folder,
+    .file-uploader {
+        width: 90%;
+        max-width: 350px;
+        top: 20%;
+        left: 50%;
+        transform: translate(-50%, 0%);
+        padding: 15px;
+    }
+
+    .progress {
+        height: 10px;
+    }
+
+    .upload-info {
+        font-size: 14px;
+    }
+
+    .logout-button {
+        justify-content: flex-end;
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .logout-button button {
+        width: auto;
+        padding: 6px 12px;
+    }
 }
