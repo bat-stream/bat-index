@@ -41,14 +41,14 @@ function showDirectory(data) {
     }
     document.getElementById('directory-data').innerHTML = html
 
-   if (!isTrash) {
-    document.querySelectorAll('.folder-tr').forEach(div => {
-        div.onclick = openFolder;
-    });
-    document.querySelectorAll('.file-tr').forEach(div => {
-        div.onclick = openFile;
-    });
-}
+    if (!isTrash) {
+        document.querySelectorAll('.folder-tr').forEach(div => {
+            div.ondblclick = openFolder;
+        });
+        document.querySelectorAll('.file-tr').forEach(div => {
+            div.ondblclick = openFile;
+        });
+    }
 
     document.querySelectorAll('.more-btn').forEach(div => {
         div.addEventListener('click', function (event) {
@@ -93,13 +93,3 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
-
-function logout() {
-    fetch('/logout', { method: 'POST' }) // Change to your logout endpoint
-        .then(res => {
-            if (res.ok) {
-                window.location.href = '/login'; // Redirect after logout
-            }
-        });
-}
-
