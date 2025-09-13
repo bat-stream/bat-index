@@ -67,6 +67,63 @@
     </video>
   </div>
 
+
+<div class="buttons-container">
+        <button class="copy-button" onclick="copyStreamUrl()">Copy Stream URL</button>
+        <button class="copy-button" onclick="copyDownloadUrl()">Copy Download URL</button>
+    </div>
+
+    <script>
+        const downloadUrl = (new URL(window.location.href)).searchParams.get('url');
+        document.getElementById('video-src').src = downloadUrl;
+
+
+        function copyTextToClipboard(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function () {
+                    alert('Link copied to clipboard!');
+                }).catch(function (err) {
+                    console.error('Could not copy text: ', err);
+                    fallbackCopyTextToClipboard(text);
+                });
+            } else {
+                fallbackCopyTextToClipboard(text);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    alert('Link copied to clipboard!');
+                } else {
+                    alert('Failed to copy the link.');
+                }
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+            }
+
+            document.body.removeChild(textArea);
+        }
+
+        function copyStreamUrl() {
+            copyTextToClipboard(window.location.href);
+        }
+
+        function copyDownloadUrl() {
+            copyTextToClipboard(downloadUrl);
+        }
+    </script>
+
+
+  
+
   <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
   <script>
     // Get video URL from query params
