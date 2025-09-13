@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Video Player</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Video Player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
   <style>
     html, body {
@@ -11,21 +11,51 @@
       padding: 0;
       height: 100%;
       background: #000;
+      font-family: Arial, sans-serif;
     }
 
     .video-wrapper {
-      width: 100vw;
+      position: relative;
+      width: 100%;
       height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
     }
 
     video {
       width: 100%;
       height: 100%;
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
     }
 
+    /* Plyr main color */
     :root {
       --plyr-color-main: #e50914;
+    }
+
+    /* Make Plyr controls adapt to smaller screens */
+    @media (max-width: 768px) {
+      .plyr__controls {
+        font-size: 14px;
+        padding: 8px;
+      }
+      .plyr__control--overlaid {
+        font-size: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .plyr__controls {
+        font-size: 12px;
+        padding: 5px;
+      }
+      .plyr__control--overlaid {
+        font-size: 18px;
+      }
     }
   </style>
 </head>
@@ -39,11 +69,13 @@
 
   <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
   <script>
+    // Get video URL from query params
     const videoUrl = new URL(window.location.href).searchParams.get("url");
     if (videoUrl) {
       document.getElementById("video-src").src = videoUrl;
     }
 
+    // Initialize Plyr
     const player = new Plyr('#player', {
       controls: [
         'play-large', 'rewind', 'play', 'fast-forward',
@@ -52,9 +84,23 @@
       ],
       seekTime: 30,
       keyboard: { focused: true, global: true },
-      tooltips: { controls: true, seek: true }
+      tooltips: { controls: true, seek: true },
+      ratio: '16:9', // keeps aspect ratio consistent
+      clickToPlay: true
     });
-  </script>
 
+    // Update player when source changes dynamically
+    if (videoUrl) {
+      player.source = {
+        type: 'video',
+        sources: [
+          {
+            src: videoUrl,
+            type: 'video/mp4'
+          }
+        ]
+      };
+    }
+  </script>
 </body>
 </html>
