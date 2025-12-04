@@ -55,30 +55,8 @@
             background-color: #0056b3;
         }
 
-    /* Plyr main color */
     :root {
       --plyr-color-main: #e50914;
-    }
-
-    /* Make Plyr controls adapt to smaller screens */
-    @media (max-width: 768px) {
-      .plyr__controls {
-        font-size: 14px;
-        padding: 8px;
-      }
-      .plyr__control--overlaid {
-        font-size: 20px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .plyr__controls {
-        font-size: 12px;
-        padding: 5px;
-      }
-      .plyr__control--overlaid {
-        font-size: 18px;
-      }
     }
   </style>
 </head>
@@ -90,72 +68,61 @@
     </video>
   </div>
 
-
 <div class="buttons-container">
         <button class="copy-button" onclick="copyStreamUrl()">Copy Stream URL</button>
         <button class="copy-button" onclick="copyDownloadUrl()">Copy Download URL</button>
-    </div>
+</div>
 
-    <script>
-        const downloadUrl = (new URL(window.location.href)).searchParams.get('url');
-        document.getElementById('video-src').src = downloadUrl;
+<script>
+    const downloadUrl = (new URL(window.location.href)).searchParams.get('url');
+    document.getElementById('video-src').src = downloadUrl;
 
-
-        function copyTextToClipboard(text) {
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(function () {
-                    alert('Link copied to clipboard!');
-                }).catch(function (err) {
-                    console.error('Could not copy text: ', err);
-                    fallbackCopyTextToClipboard(text);
-                });
-            } else {
+    function copyTextToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Link copied to clipboard!');
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
                 fallbackCopyTextToClipboard(text);
-            }
+            });
+        } else {
+            fallbackCopyTextToClipboard(text);
+        }
+    }
+
+    function fallbackCopyTextToClipboard(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            const successful = document.execCommand('copy');
+            alert(successful ? 'Link copied!' : 'Failed to copy');
+        } catch (err) {
+            console.error('Fallback copy failed', err);
         }
 
-        function fallbackCopyTextToClipboard(text) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
+        document.body.removeChild(textArea);
+    }
 
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    alert('Link copied to clipboard!');
-                } else {
-                    alert('Failed to copy the link.');
-                }
-            } catch (err) {
-                console.error('Fallback: Oops, unable to copy', err);
-            }
+    function copyStreamUrl() {
+        copyTextToClipboard(window.location.href);
+    }
 
-            document.body.removeChild(textArea);
-        }
+    function copyDownloadUrl() {
+        copyTextToClipboard(downloadUrl);
+    }
+</script>
 
-        function copyStreamUrl() {
-            copyTextToClipboard(window.location.href);
-        }
-
-        function copyDownloadUrl() {
-            copyTextToClipboard(downloadUrl);
-        }
-    </script>
-
-
-  
-
-  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-  <script>
-    // Get video URL from query params
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+<script>
     const videoUrl = new URL(window.location.href).searchParams.get("url");
     if (videoUrl) {
       document.getElementById("video-src").src = videoUrl;
     }
 
-    // Initialize Plyr
     const player = new Plyr('#player', {
       controls: [
         'play-large', 'rewind', 'play', 'fast-forward',
@@ -165,22 +132,36 @@
       seekTime: 30,
       keyboard: { focused: true, global: true },
       tooltips: { controls: true, seek: true },
-      ratio: '16:9', // keeps aspect ratio consistent
+      ratio: '16:9',
       clickToPlay: true
     });
 
-    // Update player when source changes dynamically
     if (videoUrl) {
       player.source = {
         type: 'video',
         sources: [
-          {
-            src: videoUrl,
-            type: 'video/mp4'
-          }
+          { src: videoUrl, type: 'video/mp4' }
         ]
       };
     }
-  </script>
+
+    /* -------------- AUTO ROTATE TO LANDSCAPE ON FULLSCREEN ---------------- */
+
+    // Detect fullscreen enter
+    document.addEventListener("fullscreenchange", () => {
+        if (document.fullscreenElement) {
+            // Fullscreen opened → rotate to landscape
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock("landscape").catch(err => {});
+            }
+        } else {
+            // Fullscreen exited → rotate back to portrait
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock("portrait").catch(err => {});
+            }
+        }
+    });
+</script>
+
 </body>
 </html>
